@@ -142,6 +142,68 @@ class Estudiante:
             else:
                 print("No hay datos para calcular el promedio.")
 
+class Asignatura:
+    def __init__(self, nombre):
+        self.nombre = nombre
+    @staticmethod
+    def _conn():
+        conn = sqlite3.connect(DB_NAME)
+        conn.row_factory = sqlite3.Row
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS cursos (
+                id_curso INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT NOT NULL,
+            );
+        """)
+        conn.commit()
+        return conn
+
+    def guardar(self):
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO cursos (nombre) VALUES (?)",
+                (self.nombre)
+            )
+        print(f"Curso '{self.nombre}' guardado con éxito.")
+
+    @staticmethod
+    def listar():
+        with Asignatura._conn() as conn:
+            cur = conn.execute("SELECT * FROM cursos")
+            filas = cur.fetchall()
+            if not filas:
+                print("No hay cursos registrados.")
+                return
+            print("\n--- LISTADO DE CURSOS ---")
+            for f in filas:
+                print(f"ID: {f['id_curso']} | Nombre: {f['nombre']} ")
+
+    @staticmethod
+    def modificar():
+        ide = input("Ingrese ID del curso a modificar: ")
+        with Asignatura._conn() as conn:
+            cur = conn.execute("SELECT * FROM cursos WHERE id_curso = ?", (ide,))
+            fila = cur.fetchone()
+            if not fila:
+                print("No se encontró el curso.")
+                return
+            nombre = input(f"Nuevo nombre [{fila['nombre']}]: ") or fila['nombre']
+            conn.execute("UPDATE curso SET nombre=? WHERE id_curso=?",
+                         (nombre, ide))
+        print("curso actualizado con éxito.")
+
+    @staticmethod
+    def eliminar():
+        ide = input("Ingrese ID del curso a eliminar: ")
+        with Asignatura._conn() as conn:
+            cur = conn.execute("DELETE FROM cursos WHERE id_curso = ?", (ide,))
+            if cur.rowcount == 0:
+                print("No se encontró el curso.")
+            else:
+                print("curso eliminado con éxito.")
+
+
+
 
 # --- MENÚ PRINCIPAL ---
 def menu():
