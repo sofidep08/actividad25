@@ -39,6 +39,20 @@ class Docente:
             print("\n--- LISTADO DE DOCENTES ---")
             for f in filas:
                 print(f"ID: {f['id_docente']} | Nombre: {f['nombre']} | Curso: {f['curso']}")
+    @staticmethod
+    def modificar():
+        ide = input("Ingrese ID del docente a modificar: ")
+        with Docente._conn() as conn:
+            cur = conn.execute("SELECT * FROM docentes WHERE id_docente = ?", (ide,))
+            fila = cur.fetchone()
+            if not fila:
+                print("No se encontró el docente.")
+                return
+            nombre = input(f"Nuevo nombre [{fila['nombre']}]: ") or fila['nombre']
+            curso = input(f"Nuevo curso [{fila['curso']}]: ") or fila['curso']
+            conn.execute("UPDATE docentes SET nombre=?, curso=? WHERE id_docente=?",
+                         (nombre, curso, ide))
+        print("Docente actualizado con éxito.")
 
 
 class Estudiante:
