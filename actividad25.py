@@ -54,6 +54,16 @@ class Docente:
                          (nombre, curso, ide))
         print("Docente actualizado con éxito.")
 
+    @staticmethod
+    def eliminar():
+        ide = input("Ingrese ID del docente a eliminar: ")
+        with Docente._conn() as conn:
+            cur = conn.execute("DELETE FROM docentes WHERE id_docente = ?", (ide,))
+            if cur.rowcount == 0:
+                print("No se encontró el docente.")
+            else:
+                print("Docente eliminado con éxito.")
+
 
 class Estudiante:
     def __init__(self, nombre, carrera, promedio):
