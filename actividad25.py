@@ -1,6 +1,33 @@
 import sqlite3
 
-DB_NAME = "estudiantes.db"
+DB_NAME = "escuela.db"
+class Docente:
+    def __init__(self, nombre, curso):
+        self.nombre = nombre
+        self.curso = curso
+
+    @staticmethod
+    def _conn():
+        conn = sqlite3.connect(DB_NAME)
+        conn.row_factory = sqlite3.Row
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS docentes (
+            id_docente INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            curso TEXT NOT NULL
+            );
+        """)
+        conn.commit()
+        return conn
+    def guardar(self):
+        with self._conn() as conn:
+            conn.execute(
+                "INSERT INTO docentes (nombre, curso) VALUES (?, ?)",
+                (self.nombre, self.curso)
+            )
+        print(f"Docente '{self.nombre}' guardado con éxito.")
+
+
 
 class Estudiante:
     def __init__(self, nombre, carrera, promedio):
