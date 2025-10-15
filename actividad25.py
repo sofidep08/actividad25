@@ -1,4 +1,5 @@
 import sqlite3
+from unittest import case
 
 DB_NAME = "escuela.db"
 class Docente:
@@ -162,7 +163,7 @@ class Asignatura:
         with self._conn() as conn:
             conn.execute(
                 "INSERT INTO cursos (nombre) VALUES (?)",
-                (self.nombre)
+                (self.nombre, self.carrera, self.promedio)
             )
         print(f"Curso '{self.nombre}' guardado con éxito.")
 
@@ -202,41 +203,102 @@ class Asignatura:
             else:
                 print("curso eliminado con éxito.")
 
-
-
-
 # --- MENÚ PRINCIPAL ---
 def menu():
     while True:
-        print("\n===== MENÚ DE ESTUDIANTES =====")
-        print("1. Ingresar estudiante")
-        print("2. Listar estudiantes")
-        print("3. Modificar estudiante")
-        print("4. Eliminar estudiante")
-        print("5. Promedio general")
-        print("0. Salir")
-        opcion = input("Seleccione una opción: ")
-
-        if opcion == "1":
-            nombre = input("Nombre: ")
-            carrera = input("Carrera: ")
-            promedio = float(input("Promedio: "))
-            e = Estudiante(nombre, carrera, promedio)
-            e.guardar()
-        elif opcion == "2":
-            Estudiante.listar()
-        elif opcion == "3":
-            Estudiante.modificar()
-        elif opcion == "4":
-            Estudiante.eliminar()
-        elif opcion == "5":
-            Estudiante.promedio_general()
-        elif opcion == "0":
-            print("Saliendo del programa...")
-            break
-        else:
-            print("Opción inválida. Intente nuevamente.")
-
+        try:
+            print("\n===== MENÚ =====")
+            print("1. Ingresar")
+            print("2. Listar ")
+            print("3. Modificar ")
+            print("4. Eliminar ")
+            print("5. Promedio de estudiantes")
+            print("0. Salir")
+            opcion = int(input("Seleccione una opción: "))
+            match opcion:
+                case 1:
+                    print("1. Ingresar alumno")
+                    print("2. Ingresar docente")
+                    print("3. Ingresar curso")
+                    print("0. Salir")
+                    opcion2= int(input("Seleccione una opción: "))
+                    match opcion2:
+                        case 1:
+                            nombre = input("Nombre: ")
+                            carrera = input("Carrera: ")
+                            promedio = float(input("Promedio: "))
+                            e = Estudiante(nombre, carrera, promedio)
+                            e.guardar()
+                        case 2:
+                            nombre = input("Nombre: ")
+                            curso = input("Curso: ")
+                            d = Docente(nombre, curso)
+                            d.guardar()
+                        case 3:
+                            nombre = input("Nombre: ")
+                            a = Asignatura(nombre)
+                            a.guardar()
+                        case 0:
+                            print("Saliendo del submenú...")
+                            break
+                case 2:
+                    print("1. Listado de alumnos")
+                    print("2. Listado de docentes")
+                    print("3. Listado de cursos")
+                    print("0. Salir")
+                    opcion2 = int(input("Seleccione una opción: "))
+                    match opcion2:
+                        case 1:
+                            Estudiante.listar()
+                        case 2:
+                            Docente.listar()
+                        case 3:
+                            Asignatura.listar()
+                        case 0:
+                            print("Saliendo del submenú...")
+                            break
+                case 3:
+                    print("1. Modificar alumno")
+                    print("2. Ingresar alumno")
+                    print("3. Modificar curso")
+                    print("0. Salir")
+                    opcion2 = int(input("Seleccione una opción: "))
+                    match opcion2:
+                        case 1:
+                            Estudiante.modificar()
+                        case 2:
+                            Docente.modificar()
+                        case 3:
+                            Asignatura.modificar()
+                        case 0:
+                            print("Saliendo del submenú...")
+                            break
+                case 4:
+                    print("1. Eliminar alumno")
+                    print("2. Eliminar docente")
+                    print("3. Eliminar curso")
+                    print("0. Salir")
+                    opcion2 = int(input("Seleccione una opción: "))
+                    match opcion2:
+                        case 1:
+                            Estudiante.eliminar()
+                        case 2:
+                            Docente.eliminar()
+                        case 3:
+                            Asignatura.eliminar()
+                        case 0:
+                            print("Saliendo del submenú...")
+                            break
+                case 5:
+                    Estudiante.promedio_general()
+                    print("Presione ENTER para volver al menú")
+                    input()
+                    break
+                case 0:
+                    print("Saliendo del submenú...")
+                    break
+        except ValueError:
+            print(ValueError)
 
 if __name__ == "__main__":
     menu()
