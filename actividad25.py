@@ -28,6 +28,18 @@ class Docente:
         print(f"Docente '{self.nombre}' guardado con éxito.")
 
 
+    @staticmethod
+    def listar():
+        with Docente._conn() as conn:
+            cur = conn.execute("SELECT * FROM docentes")
+            filas = cur.fetchall()
+            if not filas:
+                print("No hay docentes registrados.")
+                return
+            print("\n--- LISTADO DE DOCENTES ---")
+            for f in filas:
+                print(f"ID: {f['id_docente']} | Nombre: {f['nombre']} | Curso: {f['curso']}")
+
 
 class Estudiante:
     def __init__(self, nombre, carrera, promedio):
